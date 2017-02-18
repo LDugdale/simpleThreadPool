@@ -1,33 +1,39 @@
 package simpleThreadPool;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Created by laurie on 2/18/17.
+ * @author Laurie Dugdale
  */
 public class SimpleThreadPool implements ISimpleThreadPool{
 
-    private boolean run;
+    private LinkedBlockingQueue<ISimpleTask> tasksQ = new LinkedBlockingQueue<>();
+    private Thread[] threads = new Thread[6];
 
-    @Override
+
+
     public void start() {
-
+        for (int i = 0; i < threads.length; i++) {
+            //threads[i] = (new Thread(new SimplePoolThread(tasksQ)).start());
+            this.threads[i] = (new Thread(new SimplePoolThread(this.tasksQ)));
+            this.threads[i].start();
+        }
     }
 
-    @Override
     public void stop() {
-        this.run = false;
+        for (int i = 0; i < threads.length; i++) {
+            //Thread.currentThread().interrupt();
+            this.threads[i].interrupt();
+        }
     }
 
-    @Override
     public void addTask(ISimpleTask task) {
 
-        while(run){
-            System.out.println("test");
-
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            this.tasksQ.put(task);
+        } catch (InterruptedException e) {
+            System.err.println("Task could not be added");
+            e.printStackTrace();
         }
+
     }
 }

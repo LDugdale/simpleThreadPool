@@ -1,33 +1,28 @@
 package simpleThreadPool;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * @author Laurie Dugdale
  */
 public class SimplePoolThread implements ISimplePoolThread {
 
-    private String command;
+    private LinkedBlockingQueue<ISimpleTask> tasksQ = new LinkedBlockingQueue<>();
 
-    public SimplePoolThread(String s){
-        this.command=s;
+    public SimplePoolThread(LinkedBlockingQueue<ISimpleTask> tasksQ) {
+        this.tasksQ = tasksQ;
     }
 
     @Override
     public void run() {
-        System.out.println(Thread.currentThread().getName()+" Start. Command = "+command);
-        processCommand();
-        System.out.println(Thread.currentThread().getName()+" End.");
-    }
-
-    private void processCommand() {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                tasksQ.take().run();
+            } catch (InterruptedException e) {
+                System.err.println("Tasks interrupted");
+                e.printStackTrace();
+                break;
+            }
         }
-    }
-
-    @Override
-    public String toString(){
-        return this.command;
     }
 }
