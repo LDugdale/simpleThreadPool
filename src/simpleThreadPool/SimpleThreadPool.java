@@ -6,7 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class SimpleThreadPool implements ISimpleThreadPool{
 
-    private LinkedBlockingQueue<ISimpleTask> tasksQ = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<ISimpleTask> queue = new LinkedBlockingQueue<>();
     private Thread[] threads = new Thread[6];
 
 
@@ -14,7 +14,7 @@ public class SimpleThreadPool implements ISimpleThreadPool{
     public void start() {
         for (int i = 0; i < threads.length; i++) {
             //threads[i] = (new Thread(new SimplePoolThread(tasksQ)).start());
-            this.threads[i] = (new Thread(new SimplePoolThread(this.tasksQ)));
+            this.threads[i] = new Thread(new SimplePoolThread(this.queue));
             this.threads[i].start();
         }
     }
@@ -29,11 +29,10 @@ public class SimpleThreadPool implements ISimpleThreadPool{
     public void addTask(ISimpleTask task) {
 
         try {
-            this.tasksQ.put(task);
+            this.queue.put(task);
         } catch (InterruptedException e) {
             System.err.println("Task could not be added");
             e.printStackTrace();
         }
-
     }
 }

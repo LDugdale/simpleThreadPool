@@ -7,17 +7,17 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class SimplePoolThread implements ISimplePoolThread {
 
-    private LinkedBlockingQueue<ISimpleTask> tasksQ = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<ISimpleTask> queue = new LinkedBlockingQueue<>();
 
-    public SimplePoolThread(LinkedBlockingQueue<ISimpleTask> tasksQ) {
-        this.tasksQ = tasksQ;
+    public SimplePoolThread(LinkedBlockingQueue<ISimpleTask> queue) {
+        this.queue = queue;
     }
 
     @Override
     public void run() {
         while (true) {
             try {
-                tasksQ.take().run();
+                queue.take().run();
             } catch (InterruptedException e) {
                 System.err.println("Tasks interrupted");
                 e.printStackTrace();
