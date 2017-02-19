@@ -7,14 +7,14 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class SimplePoolThread implements ISimplePoolThread {
 
-    private LinkedBlockingQueue<ISimpleTask> queue = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<ISimpleTask> taskQueue = new LinkedBlockingQueue<>();
 
     /**
      *
-     * @param queue
+     * @param taskQueue
      */
-    public SimplePoolThread(LinkedBlockingQueue<ISimpleTask> queue) {
-        this.queue = queue;
+    public SimplePoolThread(LinkedBlockingQueue<ISimpleTask> taskQueue) {
+        this.taskQueue = taskQueue;
     }
 
     @Override
@@ -22,9 +22,11 @@ public class SimplePoolThread implements ISimplePoolThread {
      *
      */
     public void run() {
+
+
         while (true) {
             try {
-                queue.take().run();
+                taskQueue.take().run();
             } catch (InterruptedException e) {
                 System.err.println("Tasks interrupted");
                 e.printStackTrace();
