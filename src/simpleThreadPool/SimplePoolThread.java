@@ -9,11 +9,18 @@ public class SimplePoolThread implements ISimplePoolThread {
 
     private LinkedBlockingQueue<ISimpleTask> queue = new LinkedBlockingQueue<>();
 
+    /**
+     *
+     * @param queue
+     */
     public SimplePoolThread(LinkedBlockingQueue<ISimpleTask> queue) {
         this.queue = queue;
     }
 
     @Override
+    /**
+     *
+     */
     public void run() {
         while (true) {
             try {
