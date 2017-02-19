@@ -19,6 +19,10 @@ class SimpleTesting implements ISimpleTask{
         // Create 20 tasks
         for(int i = 1; i<=20; i++){
             pool.addTask(new SimpleTesting(i));
+            if (i == 10){
+                pool.stop();
+
+            }
         }
     }
 }

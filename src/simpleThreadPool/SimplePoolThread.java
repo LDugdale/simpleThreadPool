@@ -23,13 +23,14 @@ public class SimplePoolThread implements ISimplePoolThread {
      */
     public void run() {
 
-
         while (true) {
+
             try {
+
                 taskQueue.take().run();
             } catch (InterruptedException e) {
-                System.err.println("Tasks interrupted");
-                e.printStackTrace();
+
+                System.err.println("Tasks interrupted :" + e.getMessage());
                 break;
             }
         }
