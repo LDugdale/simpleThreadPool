@@ -8,11 +8,11 @@ public class SimpleTask implements ISimpleTask {
 
     @Override
     /**
-     *
+     * The task to run
      */
     public void run() {
 
-        System.out.println("this is a simple task from the thread called : " + Thread.currentThread());
+        System.out.println(Thread.currentThread() + " is currently performing a task");
 
     }
 
@@ -21,10 +21,10 @@ public class SimpleTask implements ISimpleTask {
         SimpleThreadPool pool = new SimpleThreadPool();
         pool.start();
         // Create 20 tasks
-        for(int i = 1; i<=4; i++){
+        for(int i = 1; i<=2000; i++){
 
             pool.addTask(new SimpleTask());
-            Thread.sleep(3000);
+            //Thread.sleep(3000);
         }
         pool.stop();
     }
