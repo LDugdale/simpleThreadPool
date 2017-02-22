@@ -6,67 +6,68 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class SimpleThreadPool implements ISimpleThreadPool{
 
-    private LinkedBlockingQueue<ISimpleTask> taskQueue;
-    private Thread[] threads;
-    private volatile boolean flag;
+    private LinkedBlockingQueue<ISimpleTask> taskQueue; // the task queue
+    private Thread[] threads; // array of threads
+    private int numOfThreads = 6; // set the number of threads
 
     /**
-     * Empty constructor to initialize the field variables
-     * Would prefer to pass an int that represented the requested size of the thread array
+     * Constructor initializes the Queue and array
      */
     public SimpleThreadPool(){
 
         taskQueue = new LinkedBlockingQueue<>();
-        this.threads = new Thread[4];
+        threads = new Thread [numOfThreads];
     }
 
     @Override
     /**
-     *
+     *  Starts some ISimplePoolThreads.
      */
     public void start() {
 
-        for (Thread thread : threads) {
+        for (int i = 0; i < numOfThreads; i++) {
 
-            thread = new Thread(new SimplePoolThread(taskQueue));
-            thread.start();
+            threads[i] = new Thread(new SimplePoolThread(taskQueue));
+            threads[i].start();
         }
-
     }
 
-    @Override
     /**
-     *
+     * Stops everything
      */
-    public void stop() {
+    public synchronized void stop(){
 
-        while (!taskQueue.isEmpty()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
+        try {
+
+            // wait before stopping so threads run
+            Thread.sleep(2000);
+
+            for (int i = 0; i < numOfThreads; i++) {
+
+                threads[i].interrupt();
             }
+
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
         }
 
-        flag = true;
-        for (Thread thread: threads) {
-            thread.interrupt();
-        }
     }
 
     @Override
     /**
+     * Add a task to the taskQueue
      *
-     * @param task The task to be added to the queue
+     * @param task The task to be added to the thread pool
      */
     public void addTask(ISimpleTask task) {
 
         try {
 
-            taskQueue.put(task);
+            this.taskQueue.put(task);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.out.println("Thread interrupted :" + e.getMessage());
+
+            System.err.println("Tasks interrupted :" + e.getMessage());
         }
     }
 }
